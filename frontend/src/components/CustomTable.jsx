@@ -5,6 +5,7 @@ import useAccounts from "../hooks/useAccounts";
 import TableRows from "./TableRow";
 import SelectedForm from "./SelectedForm";
 import Pagination from "./Pagination";
+import Filter from "./Filter";
 
 export default function CustomTable() {
   // Muestra la pagina 1 al iniciar
@@ -44,18 +45,21 @@ export default function CustomTable() {
     setPage(1);
     setFilter(1);
     setMessage("");
+    setSelectedRecord({});
   };
 
   const handleFilterDesc = (message) => {
     setPage(1);
     setFilter(2);
     setFilterData(message);
+    setSelectedRecord({});
   };
 
   const handleFilterAcc = (message) => {
     setPage(1);
     setFilter(3);
     setFilterData(message);
+    setSelectedRecord({});
   };
 
   const handleChange = (event) => {
@@ -71,45 +75,13 @@ export default function CustomTable() {
 
   return (
     <div>
-      {/* Filter */}
-      <div className="input-group mb-3">
-        <button
-          className="btn btn-outline-secondary"
-          type="button"
-          id="button-addon1"
-          // 3 Será Account
-          onClick={() => handleFilterOriginal()}
-        >
-          Original
-        </button>
-        <input
-          type="text"
-          className="form-control"
-          placeholder="Type here..."
-          aria-label="Example text with button addon"
-          aria-describedby="button-addon1"
-          onChange={handleChange}
-          value={message || ""}
-        />
-        <button
-          className="btn btn-outline-secondary"
-          type="button"
-          id="button-addon1"
-          // 2 Será description
-          onClick={() => handleFilterDesc(message)}
-        >
-          Description
-        </button>
-        <button
-          className="btn btn-outline-secondary"
-          type="button"
-          id="button-addon1"
-          // 3 Será Account
-          onClick={() => handleFilterAcc(message)}
-        >
-          Account
-        </button>
-      </div>
+      <Filter
+        handleFilterOriginal={handleFilterOriginal}
+        handleFilterDesc={handleFilterDesc}
+        handleFilterAcc={handleFilterAcc}
+        message={message}
+        handleChange={handleChange}
+      />
       {/* Table */}
       {selectedRecord._id && <SelectedForm account={selectedRecord} />}
       <table className="table">

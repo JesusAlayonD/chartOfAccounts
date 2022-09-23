@@ -92,6 +92,7 @@ def getByAccount():
     accounts = []
     for acc in db.find().skip(pages).limit(limits):
         if args['acc'] in acc['Account']:
+            print("1")
             accounts.append({
             "_id": str(ObjectId(acc['_id'])),
             "Account": acc['Account'],
