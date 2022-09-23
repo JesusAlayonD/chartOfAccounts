@@ -21,6 +21,9 @@ db = mongo.db.accounts
 @app.route('/accounts/', defaults={'page': 1})
 @app.route('/accounts/<page>', methods=['GET'])
 def getAccounts(page):
+    args = request.args
+    args = args.to_dict()
+    page = args['page']
     limits = 10
     pages = int(page) * limits - limits
     accounts = []
@@ -63,17 +66,18 @@ def getByDescription():
     page = args['page']
     pages = int(page) * limits - limits
     accounts = []
-    for acc in db.find({'Description': args['dec']}).skip(pages).limit(limits):
-        accounts.append({
-        "_id": str(ObjectId(acc['_id'])),
-        "Account": acc['Account'],
-        "AcctType": acc['AcctType'],
-        "Description": acc['Description'],
-        "Department": acc['Department'],
-        "TypicalBal": acc['TypicalBal'],
-        "DebitOffset": acc['DebitOffset'],
-        "CreditOffset": acc['CreditOffset'],
-    })
+    for acc in db.find().skip(pages).limit(limits):
+        if args['desc'] in acc['Description']:
+            accounts.append({
+            "_id": str(ObjectId(acc['_id'])),
+            "Account": acc['Account'],
+            "AcctType": acc['AcctType'],
+            "Description": acc['Description'],
+            "Department": acc['Department'],
+            "TypicalBal": acc['TypicalBal'],
+            "DebitOffset": acc['DebitOffset'],
+            "CreditOffset": acc['CreditOffset'],
+        })
     return jsonify({"Result": "Success", "Payload": accounts}), 200
 
 
@@ -86,17 +90,18 @@ def getByAccount():
     page = args['page']
     pages = int(page) * limits - limits
     accounts = []
-    for acc in db.find({'Account': args['acc']}).skip(pages).limit(limits):
-        accounts.append({
-        "_id": str(ObjectId(acc['_id'])),
-        "Account": acc['Account'],
-        "AcctType": acc['AcctType'],
-        "Description": acc['Description'],
-        "Department": acc['Department'],
-        "TypicalBal": acc['TypicalBal'],
-        "DebitOffset": acc['DebitOffset'],
-        "CreditOffset": acc['CreditOffset'],
-    })
+    for acc in db.find().skip(pages).limit(limits):
+        if args['acc'] in acc['Account']:
+            accounts.append({
+            "_id": str(ObjectId(acc['_id'])),
+            "Account": acc['Account'],
+            "AcctType": acc['AcctType'],
+            "Description": acc['Description'],
+            "Department": acc['Department'],
+            "TypicalBal": acc['TypicalBal'],
+            "DebitOffset": acc['DebitOffset'],
+            "CreditOffset": acc['CreditOffset'],
+        })
     return jsonify({"Result": "Success", "Payload": accounts}), 200
 
 

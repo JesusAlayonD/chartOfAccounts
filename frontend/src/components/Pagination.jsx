@@ -1,7 +1,7 @@
 export default function Pagination({ setPage, page, accounts }) {
   return (
     <>
-      <nav aria-label="Page navigation example">
+      <nav aria-label="Page navigation">
         <ul className="pagination">
           <li
             className="page-item"

@@ -12,11 +12,17 @@ export default function CustomTable() {
 
   // F
   const [filter, setFilter] = useState(1);
+  const [filterData, setFilterData] = useState("");
+
+  const [message, setMessage] = useState("");
 
   // Retorno las páginas y cargo loading de la tabla
   // El loading funciona dentro del hook
-  const { accounts, loading: accountsLoading } = useAccounts(page);
-
+  const { accounts, loading: accountsLoading } = useAccounts(
+    page,
+    filter,
+    filterData
+  );
   const [selectedRecord, setSelectedRecord] = useState({});
 
   const handleUpdate = (account) => {
@@ -34,6 +40,28 @@ export default function CustomTable() {
     }
   };
 
+  const handleFilterOriginal = () => {
+    setPage(1);
+    setFilter(1);
+    setMessage("");
+  };
+
+  const handleFilterDesc = (message) => {
+    setPage(1);
+    setFilter(2);
+    setFilterData(message);
+  };
+
+  const handleFilterAcc = (message) => {
+    setPage(1);
+    setFilter(3);
+    setFilterData(message);
+  };
+
+  const handleChange = (event) => {
+    setMessage(event.target.value);
+  };
+
   if (accountsLoading)
     return (
       <div>
@@ -45,18 +73,30 @@ export default function CustomTable() {
     <div>
       {/* Filter */}
       <div className="input-group mb-3">
-        <p class="h1">Filter</p>
+        <button
+          className="btn btn-outline-secondary"
+          type="button"
+          id="button-addon1"
+          // 3 Será Account
+          onClick={() => handleFilterOriginal()}
+        >
+          Original
+        </button>
         <input
           type="text"
           className="form-control"
-          placeholder
+          placeholder="Type here..."
           aria-label="Example text with button addon"
           aria-describedby="button-addon1"
+          onChange={handleChange}
+          value={message || ""}
         />
         <button
           className="btn btn-outline-secondary"
           type="button"
           id="button-addon1"
+          // 2 Será description
+          onClick={() => handleFilterDesc(message)}
         >
           Description
         </button>
@@ -64,6 +104,8 @@ export default function CustomTable() {
           className="btn btn-outline-secondary"
           type="button"
           id="button-addon1"
+          // 3 Será Account
+          onClick={() => handleFilterAcc(message)}
         >
           Account
         </button>

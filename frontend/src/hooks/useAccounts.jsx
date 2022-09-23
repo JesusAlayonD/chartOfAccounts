@@ -3,15 +3,32 @@ import axios from "axios";
 
 export const API_URL = import.meta.env.VITE_BACKEND_URL;
 
-const useAccounts = (page) => {
+const useAccounts = (page, filter, filterData) => {
   const [accounts, setAccounts] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const getData = async () => {
     setLoading(true);
+    console.log(page);
+    console.log(filter);
+    console.log(filterData);
     try {
-      const res = await axios.get(`${API_URL}/accounts/${page}`);
-      setAccounts(res.data.Payload);
+      if (filter === 1) {
+        const res = await axios.get(`${API_URL}/accounts/`, {
+          params: { page: page },
+        });
+        setAccounts(res.data.Payload);
+      } else if (filter === 2) {
+        const res = await axios.get(`${API_URL}/accounts/description/`, {
+          params: { desc: filterData, page: page },
+        });
+        setAccounts(res.data.Payload);
+      } else {
+        const res = await axios.get(`${API_URL}/accounts/account/`, {
+          params: { acc: filterData, page: page },
+        });
+        setAccounts(res.data.Payload);
+      }
     } catch (e) {
       console.log(e);
     } finally {
@@ -22,7 +39,7 @@ const useAccounts = (page) => {
   useEffect(() => {
     console.log(page);
     getData();
-  }, [page]);
+  }, [page, filter, filterData]);
 
   return { accounts, loading, getData };
 };
