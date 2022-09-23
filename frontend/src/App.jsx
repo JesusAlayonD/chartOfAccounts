@@ -29,6 +29,8 @@ function App() {
   return (
     <div>
       {loading && <p>Loading file...</p>}
+
+      <h1 className="display-6">Subir Archivo</h1>
       <form className="input-group" onSubmit={handleSubmit}>
         <input
           type="file"

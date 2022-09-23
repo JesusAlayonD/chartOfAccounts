@@ -30,13 +30,7 @@ export default function CustomTable() {
     <div>
       {/* Filter */}
       <div className="input-group mb-3">
-        <button
-          className="btn btn-outline-secondary"
-          type="button"
-          id="button-addon1"
-        >
-          Button
-        </button>
+        <p class="h1">Filter</p>
         <input
           type="text"
           className="form-control"
@@ -44,6 +38,20 @@ export default function CustomTable() {
           aria-label="Example text with button addon"
           aria-describedby="button-addon1"
         />
+        <button
+          className="btn btn-outline-secondary"
+          type="button"
+          id="button-addon1"
+        >
+          Description
+        </button>
+        <button
+          className="btn btn-outline-secondary"
+          type="button"
+          id="button-addon1"
+        >
+          Account
+        </button>
       </div>
       {/* Table */}
       <table className="table">

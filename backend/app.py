@@ -21,7 +21,7 @@ db = mongo.db.accounts
 @app.route('/accounts/', defaults={'page': 1})
 @app.route('/accounts/<page>', methods=['GET'])
 def getAccounts(page):
-    limits = 2
+    limits = 10
     pages = int(page) * limits - limits
     accounts = []
     for acc in db.find().skip(pages).limit(limits):
@@ -42,6 +42,39 @@ def getAccounts(page):
 @app.route('/accounts/<id>', methods=['GET'])
 def getAccount(id):
     acc = db.find_one({'_id': ObjectId(id)})
+    account = {
+        "_id": str(ObjectId(acc['_id'])),
+        "Account": acc['Account'],
+        "AcctType": acc['AcctType'],
+        "Description": acc['Description'],
+        "Department": acc['Department'],
+        "TypicalBal": acc['TypicalBal'],
+        "DebitOffset": acc['DebitOffset'],
+        "CreditOffset": acc['CreditOffset'],
+    }
+    return jsonify({"Result": "Success", "Payload": account}), 200
+
+
+@app.route('/accounts/description/', methods=['POST'])
+def getByDescription():
+    desc = request.form['desc']
+    acc = db.find_one({'Description': desc})
+    account = {
+        "_id": str(ObjectId(acc['_id'])),
+        "Account": acc['Account'],
+        "AcctType": acc['AcctType'],
+        "Description": acc['Description'],
+        "Department": acc['Department'],
+        "TypicalBal": acc['TypicalBal'],
+        "DebitOffset": acc['DebitOffset'],
+        "CreditOffset": acc['CreditOffset'],
+    }
+    return jsonify({"Result": "Success", "Payload": account}), 200
+
+
+@app.route('/accounts/account/<acc>', methods=['GET'])
+def getByAccount(acc):
+    acc = db.find_one({'Account': acc})
     account = {
         "_id": str(ObjectId(acc['_id'])),
         "Account": acc['Account'],
