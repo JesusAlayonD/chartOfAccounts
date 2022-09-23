@@ -16,7 +16,6 @@ export default function Pagination({ setPage, page, accounts }) {
           <li
             className="page-item"
             onClick={() => {
-              console.log(accounts);
               if (accounts.length !== 0) {
                 setPage(page + 1);
               }

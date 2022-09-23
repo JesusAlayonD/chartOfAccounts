@@ -19,11 +19,11 @@ export default function CustomTable() {
 
   // Retorno las páginas y cargo loading de la tabla
   // El loading funciona dentro del hook
-  const { accounts, loading: accountsLoading } = useAccounts(
-    page,
-    filter,
-    filterData
-  );
+  const {
+    accounts,
+    loading: accountsLoading,
+    getData,
+  } = useAccounts(page, filter, filterData);
   const [selectedRecord, setSelectedRecord] = useState({});
 
   const handleUpdate = (account) => {
@@ -42,6 +42,7 @@ export default function CustomTable() {
   };
 
   const handleFilterOriginal = () => {
+    getData();
     setPage(1);
     setFilter(1);
     setMessage("");
@@ -49,6 +50,7 @@ export default function CustomTable() {
   };
 
   const handleFilterDesc = (message) => {
+    getData();
     setPage(1);
     setFilter(2);
     setFilterData(message);
@@ -56,6 +58,7 @@ export default function CustomTable() {
   };
 
   const handleFilterAcc = (message) => {
+    getData();
     setPage(1);
     setFilter(3);
     setFilterData(message);
