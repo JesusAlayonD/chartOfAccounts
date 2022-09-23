@@ -1,56 +1,124 @@
 import * as React from "react";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
+import { useState } from "react";
+import useAccounts from "../hooks/useAccounts";
 
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
+export default function CustomTable() {
+  // Muestra la pagina 1 al iniciar
+  var [page, setPage] = useState(1);
+  // Retorno las páginas y cargo loading de la tabla
+  // El loading funciona dentro del hook
+  const { accounts, loading: accountsLoading } = useAccounts(page);
 
-const rows = [
-  createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-  createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-];
+  const [selectedRecord, setSelectedRecord] = useState({});
 
-export default function BasicTable({ data }) {
+  const handleRecordChange = (account) => {
+    if (account._id === selectedRecord._id) {
+      setSelectedRecord({});
+    } else {
+      setSelectedRecord(account);
+    }
+  };
+
+  if (accountsLoading)
+    return (
+      <div>
+        <h1>Loading data...</h1>
+      </div>
+    );
+
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell align="right">AcctType</TableCell>
-            <TableCell align="right">Account</TableCell>
-            <TableCell align="right">Description</TableCell>
-            <TableCell align="right">Department</TableCell>
-            <TableCell align="right">TypicalBal</TableCell>
-            <TableCell align="right">DebitOffset</TableCell>
-            <TableCell align="right">CreditOffset</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {data.map((row) => (
-            <TableRow
-              key={row.name}
-              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-            >
-              <TableCell align="right">{row.AcctType}</TableCell>
-              <TableCell align="right">{row.Account}</TableCell>
-              <TableCell align="right">{row.Description}</TableCell>
-              <TableCell align="right">{row.Department}</TableCell>
-              <TableCell align="right">{row.TypicalBal}</TableCell>
-              <TableCell align="right">{row.DebitOffset}</TableCell>
-              <TableCell align="right">{row.CreditOffset}</TableCell>
-            </TableRow>
+    <div>
+      {/* Filter */}
+      <div className="input-group mb-3">
+        <button
+          className="btn btn-outline-secondary"
+          type="button"
+          id="button-addon1"
+        >
+          Button
+        </button>
+        <input
+          type="text"
+          className="form-control"
+          placeholder
+          aria-label="Example text with button addon"
+          aria-describedby="button-addon1"
+        />
+      </div>
+      {/* Table */}
+      <table className="table">
+        <thead>
+          <tr>
+            <th scope="col">AcctType</th>
+            <th scope="col">Account</th>
+            <th scope="col">Description</th>
+            <th scope="col">Department</th>
+            <th scope="col">TypicalBal</th>
+            <th scope="col">DebitOffset</th>
+            <th scope="col">CreditOffset</th>
+          </tr>
+        </thead>
+        <tbody>
+          {accounts.map((account, index) => (
+            <>
+              <tr
+                key={index.toString()}
+                onClick={() => handleRecordChange(account)}
+              >
+                <td>{account.AcctType}</td>
+                <td>{account.Account}</td>
+                <td>{account.Description}</td>
+                <td>{account.Department}</td>
+                <td>{account.TypicalBal}</td>
+                <td>{account.DebitOffset}</td>
+                <td>{account.CreditOffset}</td>
+              </tr>
+              {/* Selected */}
+              {account._id === selectedRecord._id ? (
+                <div className="flex-container">
+                  <button
+                    type="button"
+                    className="btn btn-outline-dark m-3"
+                    onClick={() => console.log("Hola")}
+                  >
+                    Editar
+                  </button>
+                  <button type="button" className="btn btn-outline-dark">
+                    Eliminar
+                  </button>
+                </div>
+              ) : null}
+            </>
           ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+        </tbody>
+      </table>
+      {/* Pagination */}
+      <nav aria-label="Page navigation example">
+        <ul className="pagination">
+          <li className="page-item" onClick={() => console.log("prev")}>
+            <a className="page-link" href="#">
+              Previous
+            </a>
+          </li>
+          <li
+            className="page-item"
+            onClick={() => {
+              page = page + 1;
+              setPage({ page: page });
+            }}
+          >
+            <a className="page-link" href="#">
+              Next
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <div className="table"></div>
+      {selectedRecord._id && (
+        <div className="editables">
+          Solo se muestra si hay un record seleccionado
+        </div>
+      )}
+    </div>
   );
 }

@@ -2,13 +2,16 @@ import { useState, useEffect } from "react";
 import useAccounts from "./hooks/useAccounts";
 import useSendFile from "./hooks/useSendFile";
 import CustomTable from "./components/CustomTable";
+import "bootswatch/dist/lux/bootstrap.min.css";
 
 function App() {
-  const [page, setPage] = useState(1);
-  const { accounts, loading: accountsLoading } = useAccounts(page);
+  // Obtener el xlxs
   const [csv, setCsv] = useState();
+  // Loading de Subir archivo set en falso
   const [loading, setLoading] = useState(false);
-  const [selectedRecord, setSelectedRecord] = useState({});
+  //
+
+  //
   const uploadFile = async () => {
     const formData = new FormData();
     formData.append("file", csv);
@@ -23,53 +26,29 @@ function App() {
     setLoading(false);
   };
 
-  const handleRecordChange = (account) => {
-    if (account._id === selectedRecord._id) {
-      setSelectedRecord({});
-    } else {
-      setSelectedRecord(account);
-    }
-  };
-
-  if (accountsLoading)
-    return (
-      <div>
-        <h1>Loading data...</h1>
-      </div>
-    );
-
   return (
     <div>
       {loading && <p>Loading file...</p>}
-      <form onSubmit={handleSubmit}>
+      <form className="input-group" onSubmit={handleSubmit}>
         <input
           type="file"
+          className="form-control"
+          id="inputGroupFile04"
+          aria-describedby="inputGroupFileAddon04"
+          aria-label="Upload"
           onChange={(event) => {
             setCsv(event.target.files[0]);
           }}
         />
-        <input type="submit" value="upload file" />
+        <button
+          className="btn btn-outline-secondary"
+          type="submit"
+          id="inputGroupFileAddon04"
+        >
+          Button
+        </button>
       </form>
-      <input type="text" />
-      <CustomTable data={accounts} />
-      {/* <div className="table">
-        {accounts.map((account, index) => (
-          <>
-            {account._id === selectedRecord._id ? <h1>Selected</h1> : null}
-            <h1
-              key={index.toString()}
-              onClick={() => handleRecordChange(account)}
-            >
-              {account.Account}
-            </h1>
-          </>
-        ))}
-      </div> */}
-      {selectedRecord._id && (
-        <div className="editables">
-          Solo se muestra si hay un record seleccionado
-        </div>
-      )}
+      <CustomTable />
     </div>
   );
 }
