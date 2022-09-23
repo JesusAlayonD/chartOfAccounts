@@ -55,11 +55,16 @@ def getAccount(id):
     return jsonify({"Result": "Success", "Payload": account}), 200
 
 
-@app.route('/accounts/description/', methods=['POST'])
+@app.route('/accounts/description/', methods=['GET'])
 def getByDescription():
-    desc = request.form['desc']
-    acc = db.find_one({'Description': desc})
-    account = {
+    args = request.args
+    args = args.to_dict()
+    limits = 10
+    page = args['page']
+    pages = int(page) * limits - limits
+    accounts = []
+    for acc in db.find({'Description': args['dec']}).skip(pages).limit(limits):
+        accounts.append({
         "_id": str(ObjectId(acc['_id'])),
         "Account": acc['Account'],
         "AcctType": acc['AcctType'],
@@ -68,14 +73,21 @@ def getByDescription():
         "TypicalBal": acc['TypicalBal'],
         "DebitOffset": acc['DebitOffset'],
         "CreditOffset": acc['CreditOffset'],
-    }
-    return jsonify({"Result": "Success", "Payload": account}), 200
+    })
+    return jsonify({"Result": "Success", "Payload": accounts}), 200
 
 
-@app.route('/accounts/account/<acc>', methods=['GET'])
-def getByAccount(acc):
-    acc = db.find_one({'Account': acc})
-    account = {
+
+@app.route('/accounts/account/', methods=['GET'])
+def getByAccount():
+    args = request.args
+    args = args.to_dict()
+    limits = 10
+    page = args['page']
+    pages = int(page) * limits - limits
+    accounts = []
+    for acc in db.find({'Account': args['acc']}).skip(pages).limit(limits):
+        accounts.append({
         "_id": str(ObjectId(acc['_id'])),
         "Account": acc['Account'],
         "AcctType": acc['AcctType'],
@@ -84,8 +96,10 @@ def getByAccount(acc):
         "TypicalBal": acc['TypicalBal'],
         "DebitOffset": acc['DebitOffset'],
         "CreditOffset": acc['CreditOffset'],
-    }
-    return jsonify({"Result": "Success", "Payload": account}), 200
+    })
+    return jsonify({"Result": "Success", "Payload": accounts}), 200
+
+
 
 
 # Post

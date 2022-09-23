@@ -20,10 +20,11 @@ const useAccounts = (page) => {
   };
 
   useEffect(() => {
-    void getData();
-  }, []);
+    console.log(page);
+    getData();
+  }, [page]);
 
-  return { accounts, loading };
+  return { accounts, loading, getData };
 };
 
 export default useAccounts;

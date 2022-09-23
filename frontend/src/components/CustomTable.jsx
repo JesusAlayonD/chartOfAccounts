@@ -1,15 +1,30 @@
 import * as React from "react";
+import Fragment from "react";
 import { useState } from "react";
 import useAccounts from "../hooks/useAccounts";
+import TableRows from "./TableRow";
+import SelectedForm from "./SelectedForm";
+import Pagination from "./Pagination";
 
 export default function CustomTable() {
   // Muestra la pagina 1 al iniciar
-  var [page, setPage] = useState(1);
+  const [page, setPage] = useState(1);
+
+  // F
+  const [filter, setFilter] = useState(1);
+
   // Retorno las páginas y cargo loading de la tabla
   // El loading funciona dentro del hook
   const { accounts, loading: accountsLoading } = useAccounts(page);
 
   const [selectedRecord, setSelectedRecord] = useState({});
+
+  const handleUpdate = (account) => {
+    const newAccounts = accounts.map((e) =>
+      e._id !== account._id ? e : account
+    );
+    setAccounts(newAccounts);
+  };
 
   const handleRecordChange = (account) => {
     if (account._id === selectedRecord._id) {
@@ -54,6 +69,7 @@ export default function CustomTable() {
         </button>
       </div>
       {/* Table */}
+      {selectedRecord._id && <SelectedForm account={selectedRecord} />}
       <table className="table">
         <thead>
           <tr>
@@ -67,66 +83,18 @@ export default function CustomTable() {
           </tr>
         </thead>
         <tbody>
-          {accounts.map((account, index) => (
+          {accounts.map((account) => (
             <>
-              <tr
-                key={index.toString()}
-                onClick={() => handleRecordChange(account)}
-              >
-                <td>{account.AcctType}</td>
-                <td>{account.Account}</td>
-                <td>{account.Description}</td>
-                <td>{account.Department}</td>
-                <td>{account.TypicalBal}</td>
-                <td>{account.DebitOffset}</td>
-                <td>{account.CreditOffset}</td>
-              </tr>
-              {/* Selected */}
-              {account._id === selectedRecord._id ? (
-                <div className="flex-container">
-                  <button
-                    type="button"
-                    className="btn btn-outline-dark m-3"
-                    onClick={() => console.log("Hola")}
-                  >
-                    Editar
-                  </button>
-                  <button type="button" className="btn btn-outline-dark">
-                    Eliminar
-                  </button>
-                </div>
-              ) : null}
+              <TableRows
+                account={account}
+                handleRecordChange={handleRecordChange}
+                selectedRecord={selectedRecord}
+              />
             </>
           ))}
         </tbody>
       </table>
-      {/* Pagination */}
-      <nav aria-label="Page navigation example">
-        <ul className="pagination">
-          <li className="page-item" onClick={() => console.log("prev")}>
-            <a className="page-link" href="#">
-              Previous
-            </a>
-          </li>
-          <li
-            className="page-item"
-            onClick={() => {
-              page = page + 1;
-              setPage({ page: page });
-            }}
-          >
-            <a className="page-link" href="#">
-              Next
-            </a>
-          </li>
-        </ul>
-      </nav>
-      <div className="table"></div>
-      {selectedRecord._id && (
-        <div className="editables">
-          Solo se muestra si hay un record seleccionado
-        </div>
-      )}
+      <Pagination setPage={setPage} page={page} accounts={accounts} />
     </div>
   );
 }
