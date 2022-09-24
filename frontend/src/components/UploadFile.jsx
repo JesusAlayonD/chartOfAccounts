@@ -24,7 +24,6 @@ export default function () {
     e.preventDefault();
     await uploadFile();
     setLoading(false);
-    setCsv();
   };
 
   return (

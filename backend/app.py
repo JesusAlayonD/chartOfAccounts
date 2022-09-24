@@ -1,154 +1,40 @@
 from flask import Flask
-from flask import request, jsonify
+from flask import request, jsonify, Blueprint
 from flask_pymongo import PyMongo
 from flask_cors import CORS
-from bson import ObjectId
-import pandas as pd # openpyxl is required
+from dotenv import load_dotenv
+import os
+
+from api.routes.Accounts import accounts
+
 
 app = Flask(__name__)
-app.config['MONGO_URI']='mongodb://localhost/chartOfAccounts'
-mongo = PyMongo(app)
 
 
-CORS(app)
+load_dotenv()   
 
-
-db = mongo.db.accounts
-
-
-# Get all
-@app.route('/accounts', defaults={'page': 1})
-@app.route('/accounts/', defaults={'page': 1})
-@app.route('/accounts/<page>', methods=['GET'])
-def getAccounts(page):
-    args = request.args
-    args = args.to_dict()
-    page = args['page']
-    limits = 10
-    pages = int(page) * limits - limits
-    accounts = []
-    for acc in db.find().skip(pages).limit(limits):
-        accounts.append({
-        "_id": str(ObjectId(acc['_id'])),
-        "Account": acc['Account'],
-        "AcctType": acc['AcctType'],
-        "Description": acc['Description'],
-        "Department": acc['Department'],
-        "TypicalBal": acc['TypicalBal'],
-        "DebitOffset": acc['DebitOffset'],
-        "CreditOffset": acc['CreditOffset'],
-    })
-    return jsonify({"Result": "Success", "Payload": accounts}), 200
-
-
-# Get by Id
-@app.route('/accounts/<id>', methods=['GET'])
-def getAccount(id):
-    acc = db.find_one({'_id': ObjectId(id)})
-    account = {
-        "_id": str(ObjectId(acc['_id'])),
-        "Account": acc['Account'],
-        "AcctType": acc['AcctType'],
-        "Description": acc['Description'],
-        "Department": acc['Department'],
-        "TypicalBal": acc['TypicalBal'],
-        "DebitOffset": acc['DebitOffset'],
-        "CreditOffset": acc['CreditOffset'],
-    }
-    return jsonify({"Result": "Success", "Payload": account}), 200
-
-
-@app.route('/accounts/description/', methods=['GET'])
-def getByDescription():
-    args = request.args
-    args = args.to_dict()
-    limits = 10
-    page = args['page']
-    pages = int(page) * limits - limits
-    accounts = []
-    for acc in db.find().skip(pages).limit(limits):
-        if args['desc'] in acc['Description']:
-            accounts.append({
-            "_id": str(ObjectId(acc['_id'])),
-            "Account": acc['Account'],
-            "AcctType": acc['AcctType'],
-            "Description": acc['Description'],
-            "Department": acc['Department'],
-            "TypicalBal": acc['TypicalBal'],
-            "DebitOffset": acc['DebitOffset'],
-            "CreditOffset": acc['CreditOffset'],
-        })
-    return jsonify({"Result": "Success", "Payload": accounts}), 200
+PORT = os.getenv('PORT')
+HOST = os.getenv('HOST')
 
 
 
-@app.route('/accounts/account/', methods=['GET'])
-def getByAccount():
-    args = request.args
-    args = args.to_dict()
-    limits = 10
-    page = args['page']
-    pages = int(page) * limits - limits
-    accounts = []
-    for acc in db.find().skip(pages).limit(limits):
-        if args['acc'] in acc['Account']:
-            print("1")
-            accounts.append({
-            "_id": str(ObjectId(acc['_id'])),
-            "Account": acc['Account'],
-            "AcctType": acc['AcctType'],
-            "Description": acc['Description'],
-            "Department": acc['Department'],
-            "TypicalBal": acc['TypicalBal'],
-            "DebitOffset": acc['DebitOffset'],
-            "CreditOffset": acc['CreditOffset'],
-        })
-    return jsonify({"Result": "Success", "Payload": accounts}), 200
+public_routes = Blueprint('public', __name__)
+
+CORS(accounts)  
+
+
+@app.route("/")
+def root():
+    print("Welcome")
+    result = {'message': 'Success', 'status': '200', 'payload': []}
+    return jsonify(result), 200
+
+
+app.register_blueprint(accounts, url_prefix="/accounts")
 
 
 
-
-# Post
-@app.route('/accounts', methods=['POST'])
-def createAccount():
-    xlsxfile = request.files['file']
-    data = pd.read_excel(xlsxfile)
-    # getting al the data into a dict
-    dataD = data.to_dict()
-    for i in dataD['Account']:
-        if(dataD['Account'][i] == dataD['Account'][i]):
-            acc = {}
-            for d in dataD:
-                if(dataD[d][i] == dataD[d][i]):
-                    acc[d] = dataD[d][i]
-                else:
-                    acc[d] = ""
-            db.insert(acc)
-    return jsonify({"Result": "Success"}), 201
-
-
-# Update
-@app.route('/accounts/<id>', methods=['PUT'])
-def updateAccount(id):
-    print(request.json)
-    db.update_one({'_id': ObjectId(id)}, {"$set": {
-        "Account": request.json['Account'],
-        "AcctType": request.json['AcctType'],
-        "Description": request.json['Description'],
-        "Department": request.json['Department'],
-        "TypicalBal": request.json['TypicalBal'],
-        "DebitOffset": request.json['DebitOffset'],
-        "CreditOffset": request.json['CreditOffset'],
-    }})
-    return jsonify({'Result': 'Success'}), 200
-
-
-# Delete
-@app.route('/accounts/<id>', methods=['DELETE'])
-def deleteAccount(id):
-  db.delete_one({'_id': ObjectId(id)})
-  return jsonify({'Result': 'Success'}), 200
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=PORT, host=HOST)

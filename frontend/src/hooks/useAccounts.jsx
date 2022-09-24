@@ -17,17 +17,17 @@ const useAccounts = (page, filter, filterData) => {
         const res = await axios.get(`${API_URL}/accounts/`, {
           params: { page: page },
         });
-        setAccounts(res.data.Payload);
+        setAccounts(res.data.payload);
       } else if (filter === 2) {
         const res = await axios.get(`${API_URL}/accounts/description/`, {
           params: { desc: filterData, page: page },
         });
-        setAccounts(res.data.Payload);
+        setAccounts(res.data.payload);
       } else {
         const res = await axios.get(`${API_URL}/accounts/account/`, {
           params: { acc: filterData, page: page },
         });
-        setAccounts(res.data.Payload);
+        setAccounts(res.data.payload);
       }
     } catch (e) {
       console.log(e);
