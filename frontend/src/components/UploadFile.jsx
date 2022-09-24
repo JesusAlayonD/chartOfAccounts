@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import useAccounts from "../hooks/useAccounts";
 import useSendFile from "../hooks/useSendFile";
 
 export default function () {
@@ -11,7 +10,6 @@ export default function () {
   const page = 1;
   const filter = 1;
   const filterData = "";
-  const { getData } = useAccounts(page, filter, filterData);
 
   //
   const uploadFile = async () => {
@@ -26,12 +24,11 @@ export default function () {
     e.preventDefault();
     await uploadFile();
     setLoading(false);
-    getData();
+    setCsv();
   };
 
   return (
     <>
-      <h1 className="display-6">Subir Archivo</h1>
       <form className="input-group" onSubmit={handleSubmit}>
         <input
           type="file"
@@ -51,7 +48,11 @@ export default function () {
           Upload
         </button>
       </form>
-      {loading && <p>Loading file...</p>}
+      {loading && (
+        <div class="text-center">
+          <div class="spinner-border" role="status"></div>
+        </div>
+      )}
     </>
   );
 }

@@ -11,7 +11,7 @@ export default function Pagination({ setPage, page, accounts }) {
               }
             }}
           >
-            <button className="page-link">Previous</button>
+            <button className="btn btn-outline-secondary">Previous</button>
           </li>
           <li
             className="page-item"
@@ -21,7 +21,7 @@ export default function Pagination({ setPage, page, accounts }) {
               }
             }}
           >
-            <button className="page-link">Next</button>
+            <button className="btn btn-outline-secondary">Next</button>
           </li>
         </ul>
       </nav>

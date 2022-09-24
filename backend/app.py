@@ -130,6 +130,7 @@ def createAccount():
 # Update
 @app.route('/accounts/<id>', methods=['PUT'])
 def updateAccount(id):
+    print(request.json)
     db.update_one({'_id': ObjectId(id)}, {"$set": {
         "Account": request.json['Account'],
         "AcctType": request.json['AcctType'],

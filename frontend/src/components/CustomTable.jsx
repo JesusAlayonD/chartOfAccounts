@@ -2,6 +2,8 @@ import * as React from "react";
 import Fragment from "react";
 import { useState } from "react";
 import useAccounts from "../hooks/useAccounts";
+import useUpdate from "../hooks/useUpdate";
+import useDelete from "../hooks/useDelete";
 import TableRows from "./TableRow";
 import SelectedForm from "./SelectedForm";
 import Pagination from "./Pagination";
@@ -11,7 +13,7 @@ export default function CustomTable() {
   // Muestra la pagina 1 al iniciar
   const [page, setPage] = useState(1);
 
-  // F
+  // Tipo de busqueda y los datos para busqueda
   const [filter, setFilter] = useState(1);
   const [filterData, setFilterData] = useState("");
 
@@ -25,21 +27,6 @@ export default function CustomTable() {
     getData,
   } = useAccounts(page, filter, filterData);
   const [selectedRecord, setSelectedRecord] = useState({});
-
-  const handleUpdate = (account) => {
-    const newAccounts = accounts.map((e) =>
-      e._id !== account._id ? e : account
-    );
-    setAccounts(newAccounts);
-  };
-
-  const handleRecordChange = (account) => {
-    if (account._id === selectedRecord._id) {
-      setSelectedRecord({});
-    } else {
-      setSelectedRecord(account);
-    }
-  };
 
   const handleFilterOriginal = () => {
     getData();
@@ -71,10 +58,28 @@ export default function CustomTable() {
 
   if (accountsLoading)
     return (
-      <div>
-        <h1>Loading data...</h1>
+      <div class="text-center">
+        <div class="spinner-border" role="status"></div>
       </div>
     );
+
+  const handleRecordChange = (account) => {
+    if (account._id === selectedRecord._id) {
+      setSelectedRecord({});
+    } else {
+      setSelectedRecord(account);
+    }
+  };
+
+  const handleUpdate = async (account) => {
+    const res = await useUpdate(account._id, account);
+    getData();
+  };
+
+  const handleDelete = async (id) => {
+    const res = await useDelete(id);
+    getData();
+  };
 
   return (
     <div>
@@ -86,7 +91,13 @@ export default function CustomTable() {
         handleChange={handleChange}
       />
       {/* Table */}
-      {selectedRecord._id && <SelectedForm account={selectedRecord} />}
+      {selectedRecord._id && (
+        <SelectedForm
+          account={selectedRecord}
+          handleUpdate={handleUpdate}
+          handleDelete={handleDelete}
+        />
+      )}
       <table className="table">
         <thead>
           <tr>
