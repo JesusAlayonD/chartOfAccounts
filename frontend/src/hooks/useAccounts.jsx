@@ -9,9 +9,6 @@ const useAccounts = (page, filter, filterData) => {
 
   const getData = async () => {
     setLoading(true);
-    console.log(page);
-    console.log(filter);
-    console.log(filterData);
     try {
       if (filter === 1) {
         const res = await axios.get(`${API_URL}/accounts/`, {
@@ -37,7 +34,6 @@ const useAccounts = (page, filter, filterData) => {
   };
 
   useEffect(() => {
-    console.log(page);
     getData();
   }, [page, filter, filterData]);
 

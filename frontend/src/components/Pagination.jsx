@@ -1,4 +1,4 @@
-export default function Pagination({ setPage, page, accounts }) {
+export default function Pagination({ handlePageChange, page, accounts }) {
   return (
     <>
       <nav aria-label="Page navigation">
@@ -7,7 +7,7 @@ export default function Pagination({ setPage, page, accounts }) {
             className="page-item"
             onClick={() => {
               if (page > 1) {
-                setPage(page - 1);
+                handlePageChange(page - 1);
               }
             }}
           >
@@ -17,7 +17,7 @@ export default function Pagination({ setPage, page, accounts }) {
             className="page-item"
             onClick={() => {
               if (accounts.length !== 0) {
-                setPage(page + 1);
+                handlePageChange(page + 1);
               }
             }}
           >

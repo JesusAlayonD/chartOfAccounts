@@ -40,10 +40,10 @@ def getAccount(id):
 def getByDescription(page,desc):
     limits = 10
     pages = int(page) * limits - limits
-    accounts = []
-    for acc in db.find().skip(pages).limit(limits):
+    data = []
+    for acc in db.find():
         if desc.lower() in acc['Description'].lower():
-            accounts.append({
+            data.append({
             "_id": str(ObjectId(acc['_id'])),
             "Account": acc['Account'],
             "AcctType": acc['AcctType'],
@@ -53,15 +53,25 @@ def getByDescription(page,desc):
             "DebitOffset": acc['DebitOffset'],
             "CreditOffset": acc['CreditOffset'],
         })
+    accounts = []
+    dataF = len(data)
+    if(dataF>(pages+10)):
+        j=0
+        for i in range(pages, pages+10):
+            accounts.append(data[i])
+    elif((dataF + 10)>(pages+10)):
+        ran = dataF - pages
+        for i in range(pages, pages+ran):
+            accounts.append(data[i])
     return {"payload": accounts, "status": 200}
 
 def getByAccount(page, account):
     limits = 10
     pages = int(page) * limits - limits
-    accounts = []
-    for acc in db.find().skip(pages).limit(limits):
+    data = []
+    for acc in db.find():
         if account.lower() in acc['Account'].lower():
-            accounts.append({
+            data.append({
             "_id": str(ObjectId(acc['_id'])),
             "Account": acc['Account'],
             "AcctType": acc['AcctType'],
@@ -71,6 +81,16 @@ def getByAccount(page, account):
             "DebitOffset": acc['DebitOffset'],
             "CreditOffset": acc['CreditOffset'],
         })
+    accounts = []
+    dataF = len(data)
+    if(dataF>(pages+10)):
+        j=0
+        for i in range(pages, pages+10):
+            accounts.append(data[i])
+    elif((dataF + 10)>(pages+10)):
+        ran = dataF - pages
+        for i in range(pages, pages+ran):
+            accounts.append(data[i])
     return {"payload": accounts, "status": 200}
 
 def createAccount(xlsxfile):

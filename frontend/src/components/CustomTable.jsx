@@ -73,12 +73,19 @@ export default function CustomTable() {
 
   const handleUpdate = async (account) => {
     const res = await useUpdate(account._id, account);
+    setSelectedRecord({});
     getData();
   };
 
   const handleDelete = async (id) => {
     const res = await useDelete(id);
+    setSelectedRecord({});
     getData();
+  };
+
+  const handlePageChange = (page) => {
+    setPage(page);
+    setSelectedRecord({});
   };
 
   return (
@@ -122,7 +129,11 @@ export default function CustomTable() {
           ))}
         </tbody>
       </table>
-      <Pagination setPage={setPage} page={page} accounts={accounts} />
+      <Pagination
+        handlePageChange={handlePageChange}
+        page={page}
+        accounts={accounts}
+      />
     </div>
   );
 }

@@ -16,7 +16,6 @@ export default function () {
     const formData = new FormData();
     formData.append("file", csv);
     const res = await useSendFile(formData);
-    console.log(res);
   };
 
   const handleSubmit = async (e) => {
