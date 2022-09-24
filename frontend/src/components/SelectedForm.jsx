@@ -20,7 +20,7 @@ export default function SelectedForm({ account, handleUpdate, handleDelete }) {
             handleUpdate(data);
           }}
         >
-          Editar
+          Update
         </button>
         <button
           type="button"
@@ -29,7 +29,7 @@ export default function SelectedForm({ account, handleUpdate, handleDelete }) {
             handleDelete(account._id);
           }}
         >
-          Eliminar
+          Delete
         </button>
         <input
           className="form-control"
